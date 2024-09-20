@@ -1,13 +1,6 @@
 import multer, { MulterError } from "multer";
-import path from "path";
-import { brotliCompressSync, brotliDecompressSync } from "zlib";
+import { FILE_SIZE_LIMIT } from "./constant";
 
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + '-' + path.basename(file.originalname));
-    }
-});
 
 const multerUpload = multer({
     storage: multer.memoryStorage(),
@@ -16,7 +9,7 @@ const multerUpload = multer({
         if (file.mimetype !== 'application/pdf') {
             return cb(new MulterError("LIMIT_UNEXPECTED_FILE"));
         }
-        if (file.size > 20971520) {
+        if (file.size > FILE_SIZE_LIMIT) {
             return cb(new MulterError("LIMIT_FILE_SIZE"))
         }
 

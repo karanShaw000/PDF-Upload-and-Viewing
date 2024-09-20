@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import multerUpload from "../config/multerUpload";
 import multer from "multer";
 import { readdir, writeFile } from "fs/promises";
-
 import { getAllPdfResponse } from "../types";
-import { createReadStream, createWriteStream, statSync, WriteStream } from "fs";
+import { createReadStream, statSync } from "fs";
 import path from "path";
 import { compress } from 'compress-pdf'
+import { FILE_SIZE_LIMIT, FILE_SIZE_LIMIT_TO_COMPRESS, ONE_MEGABYTE } from "../config/constant";
 
 
 class PdfController {
@@ -19,7 +19,7 @@ class PdfController {
                 if (err.code === 'LIMIT_UNEXPECTED_FILE') {
                     return res.status(400).send("File is not type Pdf")
                 } else if (err.code === 'LIMIT_FILE_SIZE') {
-                    return res.status(400).send("File size exceeds 20MB")
+                    return res.status(400).send(`File size exceeds ${FILE_SIZE_LIMIT / ONE_MEGABYTE}MB`)
 
                 } else {
                     return res.status(500).send(err.message);
@@ -34,7 +34,7 @@ class PdfController {
                 // const saveTo = path.resolve('./', "uploads");
                 const filePath = path.join(this.folderPath, fileName);
 
-                if (req.file.size > 4194304) {
+                if (req.file.size > FILE_SIZE_LIMIT_TO_COMPRESS) {
                     const buffer = await compress(req.file.buffer)
                     await writeFile(filePath, buffer)
 

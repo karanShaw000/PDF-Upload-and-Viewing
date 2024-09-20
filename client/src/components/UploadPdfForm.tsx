@@ -5,7 +5,7 @@ import { Label } from "./ui/label";
 import { uploadPdf } from "@/utils/api/pdf";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "./ui/progress";
-import { FILE_SIZE_LIMIT } from "@/utils/constant";
+import { FILE_SIZE_LIMIT, ONE_MEGABYTE } from "@/utils/constant";
 
 export default function UploadPdfform() {
     const navigate = useNavigate()
@@ -21,7 +21,7 @@ export default function UploadPdfform() {
                 setFeedBack("File is not PDF")
                 setCanUpload(false)
             } else if (e.target.files[0].size > FILE_SIZE_LIMIT) {
-                setFeedBack(`File size exceeds ${FILE_SIZE_LIMIT / 1048576} MB`)
+                setFeedBack(`File size exceeds ${FILE_SIZE_LIMIT / ONE_MEGABYTE} MB`)
                 setCanUpload(false)
             } else {
                 setCanUpload(true)
